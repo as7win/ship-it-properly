@@ -1,5 +1,5 @@
 ALLOWED_EXTENSIONS = {".pdf", ".png", ".jpg"}
-MAX_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB
+MAX_SIZE_BYTES = 50 * 1024 * 1024  # 50 MB
 
 
 def check_file(filename, size_bytes):
