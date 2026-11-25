@@ -16,3 +16,10 @@ def check_file(filename, size_bytes):
         return False, "file is too large"
 
     return True, "ok"
+
+
+
+def lambda_handler(event, context):
+    """Entry point that AWS Lambda calls."""
+    ok, reason = check_file(event.get("filename"), event.get("size_bytes", 0))
+    return {"accepted": ok, "reason": reason}
