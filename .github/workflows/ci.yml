@@ -22,3 +22,34 @@ jobs:
 
       - name: Run tests
         run: pytest
+
+  deploy:
+    needs: test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Get temporary AWS access
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-south-1
+
+      - name: Package the code
+        run: zip function.zip handler.py
+
+      - name: Update the Lambda function
+        run: |
+          aws lambda update-function-code --function-name file-checker --zip-file fileb://function.zip
+          aws lambda wait function-updated --function-name file-checker
+
+      - name: Smoke test
+        run: |
+          aws lambda invoke --function-name file-checker --cli-binary-format raw-in-base64-out --payload '{"filename":"menu.pdf","size_bytes":2000}' response.json
+          cat response.json
+          grep -q '"accepted": true' response.json
