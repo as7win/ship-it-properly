@@ -48,3 +48,9 @@ def test_missing_extension_is_rejected():
 def test_lambda_handler_accepts_good_file():
     result = lambda_handler({"filename": "menu.pdf", "size_bytes": 2000}, None)
     assert result == {"accepted": True, "reason": "ok"}
+
+
+
+
+def test_jpeg_is_accepted():
+    assert check_file("photo.jpeg", 1000) == (True, "ok")

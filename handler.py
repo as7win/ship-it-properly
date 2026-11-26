@@ -1,4 +1,4 @@
-ALLOWED_EXTENSIONS = {".pdf", ".png", ".jpg"}
+ALLOWED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg"}
 MAX_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB
 
 
