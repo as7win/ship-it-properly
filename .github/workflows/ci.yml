@@ -48,8 +48,18 @@ jobs:
           aws lambda update-function-code --function-name file-checker --zip-file fileb://function.zip
           aws lambda wait function-updated --function-name file-checker
 
-      - name: Smoke test
+      - name: Publish a new version
         run: |
-          aws lambda invoke --function-name file-checker --cli-binary-format raw-in-base64-out --payload '{"filename":"menu.pdf","size_bytes":2000}' response.json
+          VERSION=$(aws lambda publish-version --function-name file-checker --query Version --output text)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Published version $VERSION"
+
+      - name: Smoke test the new version
+        run: |
+          aws lambda invoke --function-name file-checker --qualifier $VERSION --cli-binary-format raw-in-base64-out --payload '{"filename":"menu.pdf","size_bytes":2000}' response.json
           cat response.json
           grep -q '"accepted": true' response.json
+
+      - name: Move the live signpost to the new version
+        run: |
+          aws lambda update-alias --function-name file-checker --name live --function-version $VERSION
