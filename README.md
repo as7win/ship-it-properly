@@ -13,7 +13,7 @@ A file checker, the kind of validation a print or upload workflow needs before a
 {"filename": "virus.exe", "size_bytes": 2000}      ->  {"accepted": false, "reason": "file type not allowed"}
 ```
 
-It runs on AWS Lambda (Python 3.12), so nothing costs money while it sits idle.
+It runs on AWS Lambda (Python 3.12).
 
 ## The pipeline
 
